@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { extractErrorMessage } from "@/lib/api";
 import { Input } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
+import { AuthLayout } from "@/components/layout/AuthLayout";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -28,41 +29,47 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paper px-4">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <h1 className="font-display text-2xl font-semibold text-ink">Weekly Reports</h1>
-          <p className="mt-1 text-sm text-slate">Sign in to continue</p>
-        </div>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-md border border-line bg-white p-6">
+      <AuthLayout
+          title="Welcome back"
+          subtitle="Sign in to your workspace to continue."
+          footer={
+            <>
+              Don&apos;t have an account?{" "}
+              <Link href="/register" className="font-medium text-ink underline underline-offset-2">
+                Create one
+              </Link>
+            </>
+          }
+      >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <Input
-            label="Email"
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@company.com"
+              label="Email"
+              type="email"
+              required
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@company.com"
           />
           <Input
-            label="Password"
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
+              label="Password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
           />
-          {error && <p className="text-sm text-accent">{error}</p>}
-          <Button type="submit" disabled={submitting} className="mt-2 w-full">
+
+          {error && (
+              <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-sm text-accent">
+                {error}
+              </div>
+          )}
+
+          <Button type="submit" disabled={submitting} className="mt-2 w-full py-2.5">
             {submitting ? "Signing in…" : "Sign in"}
           </Button>
         </form>
-        <p className="mt-4 text-center text-sm text-slate">
-          Don&apos;t have an account?{" "}
-          <Link href="/register" className="font-medium text-ink underline">
-            Create one
-          </Link>
-        </p>
-      </div>
-    </div>
+      </AuthLayout>
   );
 }

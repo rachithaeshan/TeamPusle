@@ -28,16 +28,16 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (res) => res,
-  (error: AxiosError) => {
-    if (error.response?.status === 401 && typeof window !== "undefined") {
-      window.localStorage.removeItem(TOKEN_KEY);
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
+    (res) => res,
+    (error: AxiosError) => {
+      if (error.response?.status === 401 && typeof window !== "undefined") {
+        window.localStorage.removeItem(TOKEN_KEY);
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
       }
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
 );
 
 export function saveToken(token: string) {
@@ -56,18 +56,18 @@ export function getToken(): string | null {
 // ---- Auth ----
 export const authApi = {
   login: (email: string, password: string) =>
-    api.post<AuthResponse>("/auth/login", { email, password }).then((r) => r.data),
+      api.post<AuthResponse>("/auth/login", { email, password }).then((r) => r.data),
   register: (name: string, email: string, password: string, role: "TEAM_MEMBER" | "MANAGER") =>
-    api.post<AuthResponse>("/auth/register", { name, email, password, role }).then((r) => r.data),
+      api.post<AuthResponse>("/auth/register", { name, email, password, role }).then((r) => r.data),
 };
 
 // ---- Reports ----
 export const reportApi = {
   getMine: () => api.get<WeeklyReport[]>("/reports/mine").then((r) => r.data),
   create: (payload: Partial<WeeklyReport> & { projectId: number }) =>
-    api.post<WeeklyReport>("/reports", payload).then((r) => r.data),
+      api.post<WeeklyReport>("/reports", payload).then((r) => r.data),
   update: (id: number, payload: Partial<WeeklyReport> & { projectId: number }) =>
-    api.put<WeeklyReport>(`/reports/${id}`, payload).then((r) => r.data),
+      api.put<WeeklyReport>(`/reports/${id}`, payload).then((r) => r.data),
   submit: (id: number) => api.post<WeeklyReport>(`/reports/${id}/submit`).then((r) => r.data),
   remove: (id: number) => api.delete(`/reports/${id}`),
   search: (params: {
@@ -83,9 +83,9 @@ export const reportApi = {
 export const projectApi = {
   getAll: () => api.get<Project[]>("/projects").then((r) => r.data),
   create: (name: string, description: string, assignedMemberIds: number[]) =>
-    api.post<Project>("/projects", { name, description, assignedMemberIds }).then((r) => r.data),
+      api.post<Project>("/projects", { name, description, assignedMemberIds }).then((r) => r.data),
   update: (id: number, name: string, description: string, assignedMemberIds: number[]) =>
-    api.put<Project>(`/projects/${id}`, { name, description, assignedMemberIds }).then((r) => r.data),
+      api.put<Project>(`/projects/${id}`, { name, description, assignedMemberIds }).then((r) => r.data),
   remove: (id: number) => api.delete(`/projects/${id}`),
 };
 
@@ -98,18 +98,25 @@ export const userApi = {
 // ---- Dashboard ----
 export const dashboardApi = {
   summary: (weekStartDate: string) =>
-    api.get<DashboardSummary>("/dashboard/summary", { params: { weekStartDate } }).then((r) => r.data),
+      api.get<DashboardSummary>("/dashboard/summary", { params: { weekStartDate } }).then((r) => r.data),
   submissionStatus: (weekStartDate: string) =>
-    api
-      .get<MemberSubmissionStatus[]>("/dashboard/submission-status", { params: { weekStartDate } })
-      .then((r) => r.data),
+      api
+          .get<MemberSubmissionStatus[]>("/dashboard/submission-status", { params: { weekStartDate } })
+          .then((r) => r.data),
   tasksTrend: (weeks = 8, userId?: number) =>
-    api.get<TrendPoint[]>("/dashboard/tasks-trend", { params: { weeks, userId } }).then((r) => r.data),
+      api.get<TrendPoint[]>("/dashboard/tasks-trend", { params: { weeks, userId } }).then((r) => r.data),
   workloadByProject: (weekStartDate: string) =>
-    api
-      .get<TrendPoint[]>("/dashboard/workload-by-project", { params: { weekStartDate } })
-      .then((r) => r.data),
+      api
+          .get<TrendPoint[]>("/dashboard/workload-by-project", { params: { weekStartDate } })
+          .then((r) => r.data),
   recentActivity: () => api.get<WeeklyReport[]>("/dashboard/recent-activity").then((r) => r.data),
+};
+
+// ---- AI Assistant ----
+export const assistantApi = {
+  chat: (message: string) =>
+      api.post<{ reply: string }>("/assistant/chat", { message }).then((r) => r.data.reply),
+  summary: () => api.get<{ reply: string }>("/assistant/summary").then((r) => r.data.reply),
 };
 
 export function extractErrorMessage(err: unknown): string {

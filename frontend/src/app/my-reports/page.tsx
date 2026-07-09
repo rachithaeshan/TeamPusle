@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ReportForm, ReportFormValues } from "@/components/reports/ReportForm";
 import { ReportCard } from "@/components/reports/ReportCard";
+import {PageHeader} from "@/components/ui/Card";
 import { projectApi, reportApi, extractErrorMessage } from "@/lib/api";
 import type { Project, WeeklyReport } from "@/lib/types";
 
@@ -105,13 +106,12 @@ function MyReportsContent() {
     <div className="min-h-screen bg-paper">
       <Navbar />
       <main className="mx-auto max-w-4xl px-6 py-10">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-2xl font-semibold text-ink">My weekly reports</h1>
-            <p className="mt-1 text-sm text-slate">Your report history, most recent first.</p>
-          </div>
-          {!showForm && projects.length > 0 && <Button onClick={openCreate}>New report</Button>}
-        </div>
+        <PageHeader
+            eyebrow="My Reports"
+            title="Weekly reports"
+            subtitle="Your report history, most recent first."
+            action={!showForm && projects.length > 0 ? <Button onClick={openCreate}>New report</Button> : undefined}
+        />
 
         {error && (
           <div className="mb-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-3 text-sm text-accent">

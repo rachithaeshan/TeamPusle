@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { RouteGuard } from "@/lib/route-guard";
 import { Navbar } from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { Card, PageHeader } from "@/components/ui/Card";
 import { ProjectForm } from "@/components/projects/ProjectForm";
 import { projectApi, userApi, extractErrorMessage } from "@/lib/api";
 import type { Project, UserSummary } from "@/lib/types";
@@ -72,22 +72,23 @@ function ProjectsContent() {
     <div className="min-h-screen bg-paper">
       <Navbar />
       <main className="mx-auto max-w-3xl px-6 py-10">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-2xl font-semibold text-ink">Projects & categories</h1>
-            <p className="mt-1 text-sm text-slate">Manage the tags team members attach to their reports.</p>
-          </div>
-          {!showForm && (
-            <Button
-              onClick={() => {
-                setEditing(undefined);
-                setShowForm(true);
-              }}
-            >
-              New project
-            </Button>
-          )}
-        </div>
+        <PageHeader
+            eyebrow="Projects"
+            title="Projects & categories"
+            subtitle="Manage the tags team members attach to their reports."
+            action={
+              !showForm ? (
+                  <Button
+                      onClick={() => {
+                        setEditing(undefined);
+                        setShowForm(true);
+                      }}
+                  >
+                    New project
+                  </Button>
+              ) : undefined
+            }
+        />
 
         {error && (
           <div className="mb-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-3 text-sm text-accent">

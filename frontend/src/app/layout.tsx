@@ -3,8 +3,8 @@ import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 
 export const metadata: Metadata = {
-  title: "Weekly Reports",
-  description: "Weekly Report Generator & Team Dashboard",
+    title: "TeamPulse",
+    description: "TeamPulse — Weekly Report Generator & Team Dashboard",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

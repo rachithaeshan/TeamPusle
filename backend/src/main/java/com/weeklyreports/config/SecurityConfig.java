@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/health").permitAll()
                         // Managers only
                         .requestMatchers("/api/dashboard/**").hasRole("MANAGER")
+                        .requestMatchers("/api/assistant/**").hasRole("MANAGER")
                         .requestMatchers("/api/projects/**").hasAnyRole("MANAGER", "TEAM_MEMBER")
                         .anyRequest().authenticated()
                 )

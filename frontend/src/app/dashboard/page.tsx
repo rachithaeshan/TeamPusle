@@ -9,6 +9,9 @@ import { SubmissionStatusChart } from "@/components/dashboard/SubmissionStatusCh
 import { TasksTrendChart } from "@/components/dashboard/TasksTrendChart";
 import { WorkloadChart } from "@/components/dashboard/WorkloadChart";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
+import { PageHeader } from "@/components/ui/Card";
+import { AiSummaryCard } from "@/components/dashboard/AiSummaryCard";
+import { ChatWidget } from "@/components/dashboard/ChatWidget";
 import { FilterBar, Filters } from "@/components/dashboard/FilterBar";
 import { ReportsTable } from "@/components/dashboard/ReportsTable";
 import { dashboardApi, projectApi, reportApi, userApi, extractErrorMessage } from "@/lib/api";
@@ -90,79 +93,80 @@ function DashboardContent() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-paper">
-      <Navbar />
-      <main className="mx-auto max-w-6xl px-6 py-10">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-2xl font-semibold text-ink">Team dashboard</h1>
-            <p className="mt-1 text-sm text-slate">
-              Week of{" "}
-              {formatDateRange(
-                weekStart,
-                toISODate(getWeekEnd(new Date(weekStart + "T00:00:00")))
-              )}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => setWeekStart(shiftWeek(weekStart, -1))}>
-              ← Previous week
-            </Button>
-            <Button variant="secondary" onClick={() => setWeekStart(currentWeekStartIso())}>
-              This week
-            </Button>
-            <Button variant="secondary" onClick={() => setWeekStart(shiftWeek(weekStart, 1))}>
-              Next week →
-            </Button>
-          </div>
-        </div>
+      <div className="min-h-screen bg-paper">
+        <Navbar />
+        <main className="mx-auto max-w-6xl px-6 py-10">
+          <PageHeader
+              eyebrow="Dashboard"
+              title="Team overview"
+              subtitle={`Week of ${formatDateRange(
+                  weekStart,
+                  toISODate(getWeekEnd(new Date(weekStart + "T00:00:00")))
+              )}`}
+              action={
+                <div className="flex gap-2">
+                  <Button variant="secondary" onClick={() => setWeekStart(shiftWeek(weekStart, -1))}>
+                    ← Previous week
+                  </Button>
+                  <Button variant="secondary" onClick={() => setWeekStart(currentWeekStartIso())}>
+                    This week
+                  </Button>
+                  <Button variant="secondary" onClick={() => setWeekStart(shiftWeek(weekStart, 1))}>
+                    Next week →
+                  </Button>
+                </div>
+              }
+          />
 
-        {error && (
-          <div className="mb-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-3 text-sm text-accent">
-            {error}
-          </div>
-        )}
-
-        {loading || !summary ? (
-          <p className="text-sm text-slate">Loading dashboard…</p>
-        ) : (
-          <div className="flex flex-col gap-6">
-            <SummaryCards summary={summary} />
-
-            <div className="grid gap-6 md:grid-cols-2">
-              <SubmissionStatusChart data={submissionStatus} />
-              <WorkloadChart data={workload} />
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-3">
-              <div className="md:col-span-2">
-                <TasksTrendChart data={tasksTrend} />
+          {error && (
+              <div className="mb-6 rounded-md border border-accent/30 bg-accent/10 px-4 py-3 text-sm text-accent">
+                {error}
               </div>
-              <ActivityFeed reports={activity} />
-            </div>
+          )}
 
-            <div className="flex flex-col gap-4 rounded-md border border-line bg-white p-5">
-              <FilterBar
-                members={members}
-                projects={projects}
-                filters={filters}
-                onChange={applyFilters}
-                onReset={() => applyFilters({})}
-              />
-            </div>
+          {loading || !summary ? (
+              <p className="text-sm text-slate">Loading dashboard…</p>
+          ) : (
+              <div className="flex flex-col gap-6">
+                <SummaryCards summary={summary} />
 
-            <ReportsTable reports={filteredReports} />
-          </div>
-        )}
-      </main>
-    </div>
+                <div className="grid gap-6 md:grid-cols-2">
+                  <SubmissionStatusChart data={submissionStatus} />
+                  <WorkloadChart data={workload} />
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-3">
+                  <div className="md:col-span-2">
+                    <TasksTrendChart data={tasksTrend} />
+                  </div>
+                  <ActivityFeed reports={activity} />
+                </div>
+
+                <AiSummaryCard />
+
+                <div className="flex flex-col gap-4 rounded-md border border-line bg-white p-5">
+                  <FilterBar
+                      members={members}
+                      projects={projects}
+                      filters={filters}
+                      onChange={applyFilters}
+                      onReset={() => applyFilters({})}
+                  />
+                </div>
+
+                <ReportsTable reports={filteredReports} />
+              </div>
+          )}
+        </main>
+        <ChatWidget />
+      </div>
   );
 }
 
 export default function DashboardPage() {
   return (
-    <RouteGuard allowedRoles={["MANAGER"]}>
-      <DashboardContent />
-    </RouteGuard>
+      <RouteGuard allowedRoles={["MANAGER"]}>
+        <DashboardContent />
+      </RouteGuard>
   );
 }
